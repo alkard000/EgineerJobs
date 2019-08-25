@@ -3,6 +3,13 @@ import { set } from "mongoose";
 document.addEventListener('DOMContentLoaded', () => {
     const skills = document.querySelector('.lista-conocimientos');
 
+    //------------LIMPIAR alertas---------------//
+    let alertas = document.querySelector('.alertas');
+
+    if(alertas) {
+        limpiarAlertas();
+    }
+    //----------------------------------------//
     if(skills) {
         skills.addEventListener('click', agregarSkills);
         //Una vez en la Edicion ---------------->> LLamar la funcion
@@ -35,4 +42,16 @@ const skillsSeleccionados = () => {
     //Inyectar en el HIDDEN
     const skillsArray = [...skills]
     document.querySelector('#skills').value = skillsArray;   
+}
+//Eliminar las Alertas cada 2 segundos
+const limpiarAlertas = () => {
+    const alertas = document.querySelector('.alertas');
+    const interval = setInterval(() => {
+        if(alertas.children.length > 0) {
+            alertas.removeChild(alertas.children[0]);
+        } else if(alertas.children.length === 0) {
+            alertas.parentElement.removeChild(alertas);
+            clearInterval(interval);
+        }
+    }, 2000);
 }

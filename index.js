@@ -8,6 +8,8 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const bodyParser = require('body-parser');
+const expressValidator = require('express-validator');
+const flash = require('connect-flash');
 
 //Hace un require a ENV con DOTENV
 require('dotenv').config({
@@ -19,6 +21,9 @@ const app = express();
 //Habilitar BodyParser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
+
+//Validaciones
+app.use(expressValidator());
 
 //Habilitar Handlebars ----------->> TEMPLATE ENGINE
 app.engine('handlebars',  
@@ -42,6 +47,14 @@ app.use(session({
     store : new MongoStore({mongooseConnection : mongoose.connection})
 }))
 //---------------------------------------//
+//Alertas
+app.use(flash());
+//crar middleware
+app.use((req, res, next) => {
+    res.locals.mensajes = req.flash();
+    next();
+});
+
 app.use('/', router());
 
 app.listen(process.env.PUERTO, () => {

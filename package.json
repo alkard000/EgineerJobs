@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./index",
-    "start": "concurrently \"npm run dev\" \"npm run watch\" ", 
+    "start": "concurrently \"npm run dev\" \"npm run watch\" ",
     "watch": "webpack --w --mode development"
   },
   "repository": {
@@ -26,13 +26,16 @@
   },
   "homepage": "https://github.com/alkard000/EgineerJobs#readme",
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "concurrently": "^4.1.2",
+    "connect-flash": "^0.1.1",
     "connect-mongo": "^3.0.0",
     "cookie-parser": "^1.4.4",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "express-handlebars": "^3.1.0",
     "express-session": "^1.16.2",
+    "express-validator": "^4.3.0",
     "mongoose": "^5.6.10",
     "shortid": "^2.2.14",
     "slug": "^1.1.0"
