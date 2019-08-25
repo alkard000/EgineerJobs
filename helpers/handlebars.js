@@ -11,9 +11,14 @@ module.exports = {
         let html = '';
         skills.forEach(skills => {
             html += `
-                <li>${skills}</li>
+                <li ${seleccionadas.includes(skills) ? ' class="activo" ' : ''}>${skills}</li>
             `;
-        });
+        });//-------->Funcion que marca las skills iniciales como default
         return opciones.fn().html = html;
-    }
+    }, 
+    tipoContrato : (seleccionado, opciones) => {
+        return opciones.fn(this).replace(
+            new RegExp(` value="${seleccionado}" `), '$& selected="selected" '
+        )
+    }//-------->Funcion que marca el contrato inicial como default
 }

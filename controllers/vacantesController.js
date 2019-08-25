@@ -17,3 +17,43 @@ exports.agregarVacante = async (req, res) => {
     //Redireccionar
     res.redirect(`/vacantes/${nuevaVacante.url}`);
 }
+//Mostrar una Vacante
+exports.mostrarVacante = async (req, res, next) => {
+    const vacante = await Vacante.findOne({ url : req.params.url });
+    //SI no existen resultados
+    if(!vacante ) return next();
+    //Enviar a los Views
+    res.render('vacante', {
+        vacante,
+        nombrePagina : vacante.titulo,
+        barra : true
+    })
+}
+//Formulario de la edicion de una Vacante
+exports.formEditarVacante = async (req, res, next) => {
+    const vacante = await Vacante.findOne({url : req.params.url});
+    //SI no existe la Vacante
+    if(!vacante) return next();
+    //Enviar a los Views
+    res.render('editarvacante', {
+        vacante,
+        nombrePagina : `Editar - ${vacante.titulo}`
+    })
+}
+//Enviar la Edicion a la BD
+exports.editarVacante = async (req, res) => {
+
+    const vacanteActualizada = req.body;
+
+    vacanteActualizada.skills = req.body.skills.split(',');
+
+    const vacante = await Vacante.findOneAndUpdate({
+        url : req.params.url
+    }, 
+    vacanteActualizada, {
+        new : true,
+        runValidators : true
+    });
+
+    res.redirect(`/vacantes/${vacante.url}`);
+}
