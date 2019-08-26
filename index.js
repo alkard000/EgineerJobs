@@ -1,3 +1,4 @@
+//---------DEPENDENCIAS------------//
 const mongoose = require('mongoose');
 require('./config/db');
 const express = require('express');
@@ -10,6 +11,7 @@ const MongoStore = require('connect-mongo')(session);
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const flash = require('connect-flash');
+const passport = require('./config/passport');
 
 //Hace un require a ENV con DOTENV
 require('dotenv').config({
@@ -46,6 +48,10 @@ app.use(session({
     saveUninitialized : false,
     store : new MongoStore({mongooseConnection : mongoose.connection})
 }))
+//---------------------------------------//
+//INICIAR PASSPORT-----------------------//
+app.use(passport.initialize());
+app.use(passport.session());
 //---------------------------------------//
 //Alertas
 app.use(flash());

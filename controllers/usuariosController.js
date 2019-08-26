@@ -7,20 +7,6 @@ exports.formCrearCuenta = (req, res) => {
         tagline : 'Comienza a publicar tus vacantes gratis, solo create una Cuenta'
     })
 }
-exports.crearUsuario = async (req, res, next) => {
-    //Crear el Usuario
-    const usuario = new Usuarios(req.body);
-    
-    //Si no se crear el Usuario
-    try {
-        await usuario.save();
-        //Si se crea
-        res.redirect('/iniciar-sesion');
-    } catch (error) {
-        req.flash('error', error);
-        res.redirect('/crear-cuenta');
-    }
-}
 exports.validarRegistro = (req, res, next) => {
     
     //SANITIZAR
@@ -50,4 +36,23 @@ exports.validarRegistro = (req, res, next) => {
     }
     //Si NO hay errores
     next();
+}
+exports.crearUsuario = async (req, res, next) => {
+    //Crear el Usuario
+    const usuario = new Usuarios(req.body);
+    
+    //Si no se crear el Usuario
+    try {
+        await usuario.save();
+        //Si se crea
+        res.redirect('/iniciar-sesion');
+    } catch (error) {
+        req.flash('error', error);
+        res.redirect('/crear-cuenta');
+    }
+}
+exports.formIniciarSesion = (req, res) => {
+    res.render('iniciarsesion', {
+        nombrePagina : 'Inicia tu sesion en EngineerJobs'
+    })
 }
