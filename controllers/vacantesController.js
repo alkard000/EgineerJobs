@@ -10,6 +10,8 @@ exports.formularioNuevaVacante = (req, res) => {
 //Agregar vacante s ala BD
 exports.agregarVacante = async (req, res) => {
     const vacante = new Vacante(req.body);
+    //Autor de la Vacante
+    vacante.autor = req.user._id;
     //Generar Arreglo de Habilidades
     vacante.skills = req.body.skills.split(',');
     //Alamcenar en BD
