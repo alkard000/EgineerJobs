@@ -50,5 +50,13 @@ module.exports = () => {
     router.get('/administracion', 
         authController.verificarUsuario,
         authController.mostrarPanel);
+    
+    //Edicion de la CUENTA
+    router.get('/editar-perfil',
+        authController.verificarUsuario,
+        usuariosController.formEditarPerfil);
+    router.post('/editar-perfil', 
+        authController.verificarUsuario,
+        usuariosController.editarPerfil);
     return router;
 }
