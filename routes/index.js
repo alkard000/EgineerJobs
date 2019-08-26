@@ -15,8 +15,10 @@ module.exports = () => {
 
     //Crear VACANTES
     router.get('/vacantes/nueva', 
+        authController.verificarUsuario,
         vacantesController.formularioNuevaVacante);
-    router.post('/vacantes/nueva', 
+    router.post('/vacantes/nueva',
+        authController.verificarUsuario, 
         vacantesController.agregarVacante);
 
     //Mostrar VACANTE
@@ -25,8 +27,10 @@ module.exports = () => {
 
     //Editar VACANTE
     router.get('/vacantes/editar/:url', 
+        authController.verificarUsuario,
         vacantesController.formEditarVacante);
     router.post('/vacantes/editar/:url', 
+        authController.verificarUsuario,
         vacantesController.editarVacante);
     
     //Crear CUENTAS
@@ -42,5 +46,9 @@ module.exports = () => {
     router.post('/iniciar-sesion', 
         authController.autenticarUsuario);
 
+    //Administracion de la CUENTA
+    router.get('/administracion', 
+        authController.verificarUsuario,
+        authController.mostrarPanel);
     return router;
 }
