@@ -22,11 +22,11 @@ module.exports = () => {
         vacantesController.validarVacantes,
         vacantesController.agregarVacante);
 
-    //Mostrar VACANTE
+    //Mostrar VACANTES
     router.get('/vacantes/:url', 
         vacantesController.mostrarVacante);
 
-    //Editar VACANTE
+    //Editar VACANTES
     router.get('/vacantes/editar/:url', 
         authController.verificarUsuario,
         vacantesController.formEditarVacante);
@@ -34,6 +34,10 @@ module.exports = () => {
         authController.verificarUsuario,
         vacantesController.validarVacantes,
         vacantesController.editarVacante);
+
+    //Eliminar VACANTES
+    router.delete('/vacantes/eliminar/:id',
+        vacantesController.eliminarVacante);
     
     //Crear CUENTAS
     router.get('/crear-cuenta', 

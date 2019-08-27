@@ -1,3 +1,5 @@
+import axios from 'axios';
+import Swal from 'sweetalert2';
 import { set } from "mongoose";
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,6 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
         skills.addEventListener('click', agregarSkills);
         //Una vez en la Edicion ---------------->> LLamar la funcion
         skillsSeleccionados();
+    }
+    //Alerta eliminacion VACANTE
+    const vacantesListado = document.querySelector('.panel-administracion');
+    if(vacantesListado ) {
+        vacantesListado.addEventListener('click', accionesListado);
     }
 })
 const skills = new Set();
@@ -54,4 +61,50 @@ const limpiarAlertas = () => {
             clearInterval(interval);
         }
     }, 2000);
+}
+//Eliminar Vacantes
+const accionesListado =  e => {
+    e.preventDefault();
+
+    if(e.target.dataset.eliminar){
+        //Eliminar por Medio de AXIOS
+        Swal.fire({
+            title: 'Estas Seguro?',
+            text: "Si eliminas una vacante no se volvera a recuperar",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, borrar',
+            cancelButtonText : 'No, Cancelar'
+          }).then((result) => {
+            if (result.value) {
+                //Enviar peticion a AXIOS
+                const url = `${location.origin}/vacantes/eliminar/${e.target.dataset.eliminar}`;
+                //Usar AXIOS
+                axios.delete(url, { params : { url } })
+                    .then(function(respuesta){
+                        if(respuesta === 200) {
+                            Swal.fire(
+                                'Eliminado',
+                                 respuesta.data,
+                                'success'
+                            );
+                            e.target.parentElement.parentElement.parentElement.
+                                removeChild(e.target.parentElement.parentElement);
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire({
+                            type : 'error',
+                            title : 'Hubo un error inesperado',
+                            text : 'Acceso no permitido'
+                        })
+                    })
+
+            }
+          })
+    } else if(e.target.tagName === 'A'){
+        window.location.href = e.target.href;
+    }
 }
