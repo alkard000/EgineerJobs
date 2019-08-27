@@ -4,7 +4,9 @@ const Vacante = mongoose.model('Vacante');
 exports.formularioNuevaVacante = (req, res) => {
     res.render('nuevavacante', {
         nombrePagina : 'Nueva Vacante',
-        tagline : 'LLena el formulario y publica tu vacante'
+        tagline : 'LLena el formulario y publica tu vacante',
+        cerrarSesion : true,
+        nombre : req.user.nombre
     })
 }
 //Agregar vacante s ala BD
@@ -39,7 +41,9 @@ exports.formEditarVacante = async (req, res, next) => {
     //Enviar a los Views
     res.render('editarvacante', {
         vacante,
-        nombrePagina : `Editar - ${vacante.titulo}`
+        nombrePagina : `Editar - ${vacante.titulo}`,
+        cerrarSesion : true,
+        nombre : req.user.nombre
     })
 }
 //Enviar la Edicion a la BD
@@ -58,4 +62,34 @@ exports.editarVacante = async (req, res) => {
     });
 
     res.redirect(`/vacantes/${vacante.url}`);
+}
+//VALIDAR y SANITIZAR
+exports.validarVacantes = (req, res, next) => {
+    //SANITIZAR campos
+    req.sanitizeBody('titulo').escape();
+    req.sanitizeBody('empresa').escape();
+    req.sanitizeBody('ubicacion').escape();
+    req.sanitizeBody('salario').escape();
+    req.sanitizeBody('contrato').escape();
+    req.sanitizeBody('skills').escape();
+    //VALIDACION campos
+    req.checkBody('titulo', 'Agrega un Titulo a la Vacante').notEmpty();
+    req.checkBody('empresa', 'Agrega una Empresa o Nombre').notEmpty();
+    req.checkBody('ubicacion', 'Agrega una Ubicacion').notEmpty();
+    req.checkBody('contrato', 'Agrega un Tipo de Contrato').notEmpty();
+    req.checkBody('skills', 'Agrega al menos una skill').notEmpty();
+
+    const errores = req.validationErrors();
+    if(errores) {
+        //Recargar vista con los errores
+        req.flash('error', errores.map(error => error.msg));
+        res.render('nuevavacante', {
+            nombrePagina : 'Nueva Vacante',
+            tagline : 'LLena el formulario y publica tu vacante',
+            cerrarSesion : true,
+            nombre : req.user.nombre,
+            mensajes : req.flash()
+        })
+    }
+    next();
 }

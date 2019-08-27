@@ -59,7 +59,9 @@ exports.formIniciarSesion = (req, res) => {
 exports.formEditarPerfil = (req, res) => {
     res.render('editarperfil', {
         nombrePagina : 'Edita tu Perfil',
-        usuario : req.user
+        usuario : req.user,
+        cerrarSesion : true,
+        nombre : req.user.nombre
     })
 }
 exports.editarPerfil = async (req, res) => {
@@ -72,4 +74,31 @@ exports.editarPerfil = async (req, res) => {
     await usuario.save();
     req.flash('correcto', 'Cambios Guardados');
     res.redirect('/administracion');
+}
+//SANITIZAR y VALIDAR perfiles
+exports.validarPerfil = (req, res, next) => {
+    //SANITIZAR perfil
+    req.sanitizeBody('nombre').escape();
+    req.sanitizeBody('email').escape();
+    if(req.body.password) {
+        req.sanitizeBody('password').escape();
+    }
+    //VALIDAR perfil
+    req.checkBody('nombre', 'El nombre no puede ir Vacio').notEmpty();
+    req.checkBody('email', 'El correo no puede ir Vacio').notEmpty();
+
+    const errores = req.validationErrors();
+
+    if(errores) {
+        req.flash('error', errores.map(error => error.msg));
+
+        res.render('editarperfil', {
+            nombrePagina : 'Edita tu Perfil',
+            usuario : req.user,
+            cerrarSesion : true,
+            nombre : req.user.nombre,
+            mensajes : req.flash()
+        })
+    }
+    next();
 }
