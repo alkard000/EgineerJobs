@@ -1,10 +1,57 @@
 const mongoose = require('mongoose');
 const Usuarios = mongoose.model('Usuarios');
+const multer = require('multer');
+const shortid = require('shortid');
 
+//Subir l aimagen de perfil
+exports.subirImagen = (req, res, next) => {
+    upload(req , res, function(error){
+        if(error) {
+            console.log(error);
+            if(error instanceof multer.MulterError){
+                if(error.code === 'LIMIT_FILE_SIZE') {
+                    req.flash('error', 'El archivo es demasiado grande (MAX. 1000 Kb)');
+                } else {
+                    req.flash('error', error.message);
+                }
+            } else {
+                req.flash('error', error.message);
+            }
+            res.redirect('/administracion');
+            return;
+        } else {
+            return next();
+        }
+    });
+}
+//Configuracion de MULTER
+const configuracionMulter = {
+    limits : { fileSize : 1000000 },
+    storage : fileStorage = multer.diskStorage({
+        destination : (req, file, cb) => {
+            cb(null, __dirname+'../../public/uploads/perfiles');
+        },
+        filename : (req, file, cb) => {
+            const extension = file.mimetype.split('/')[1];
+            cb(null, `${shortid.generate()}.${extension}`);
+        }
+    }),
+    fileFilter(req, file, cb)  {
+        if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+            //CB como true(ACEPTADA) o false(DENEGADA)
+            cb(null, true);
+        } else {
+            cb(new Error('Formato no Valido'), false);
+        }
+    }
+}
+const upload = multer(configuracionMulter).single('imagen');
+//Creacion de un CUENTA
 exports.formCrearCuenta = (req, res) => {
     res.render('crearcuenta', {
         nombrePagina : 'Crea tu cuenta en EngineerJobs',
-        tagline : 'Comienza a publicar tus vacantes gratis, solo create una Cuenta'
+        tagline : 'Comienza a publicar tus vacantes gratis, solo create una Cuenta',
+        imagen : req.user.imagen
     })
 }
 exports.validarRegistro = (req, res, next) => {
@@ -30,6 +77,7 @@ exports.validarRegistro = (req, res, next) => {
         res.render('crearcuenta',{
             nombrePagina : 'Crea tu cuenta en EngineerJobs',
             tagline : 'Comienza a publicar tus vacantes gratis, solo create una Cuenta',
+            imagen : req.user.imagen,
             mensajes : req.flash()
         });
         return;
@@ -61,7 +109,8 @@ exports.formEditarPerfil = (req, res) => {
         nombrePagina : 'Edita tu Perfil',
         usuario : req.user,
         cerrarSesion : true,
-        nombre : req.user.nombre
+        nombre : req.user.nombre,
+        imagen : req.user.imagen
     })
 }
 exports.editarPerfil = async (req, res) => {
@@ -70,6 +119,10 @@ exports.editarPerfil = async (req, res) => {
     usuario.email = req.body.email;
     if(req.body.password){
         usuario.password = req.body.password;
+    }
+
+    if(req.file) {
+        usuario.imagen = req.file.filename;
     }
     await usuario.save();
     req.flash('correcto', 'Cambios Guardados');
@@ -97,6 +150,7 @@ exports.validarPerfil = (req, res, next) => {
             usuario : req.user,
             cerrarSesion : true,
             nombre : req.user.nombre,
+            imagen : req.user.imagen,
             mensajes : req.flash()
         })
     }

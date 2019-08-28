@@ -6,7 +6,8 @@ exports.formularioNuevaVacante = (req, res) => {
         nombrePagina : 'Nueva Vacante',
         tagline : 'LLena el formulario y publica tu vacante',
         cerrarSesion : true,
-        nombre : req.user.nombre
+        nombre : req.user.nombre,
+        imagen : req.user.imagen
     })
 }
 //Agregar vacante s ala BD
@@ -23,13 +24,14 @@ exports.agregarVacante = async (req, res) => {
 }
 //Mostrar una Vacante
 exports.mostrarVacante = async (req, res, next) => {
-    const vacante = await Vacante.findOne({ url : req.params.url });
+    const vacante = await Vacante.findOne({ url : req.params.url }).populate('autor');
     //SI no existen resultados
     if(!vacante ) return next();
     //Enviar a los Views
     res.render('vacante', {
         vacante,
         nombrePagina : vacante.titulo,
+        imagen : req.user.imagen,
         barra : true
     })
 }
@@ -43,7 +45,8 @@ exports.formEditarVacante = async (req, res, next) => {
         vacante,
         nombrePagina : `Editar - ${vacante.titulo}`,
         cerrarSesion : true,
-        nombre : req.user.nombre
+        nombre : req.user.nombre,
+        imagen : req.user.imagen
     })
 }
 //Enviar la Edicion a la BD
@@ -88,6 +91,7 @@ exports.validarVacantes = (req, res, next) => {
             tagline : 'LLena el formulario y publica tu vacante',
             cerrarSesion : true,
             nombre : req.user.nombre,
+            imagen : req.user.imagen,
             mensajes : req.flash()
         })
     }

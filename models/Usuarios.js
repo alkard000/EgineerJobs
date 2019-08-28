@@ -18,6 +18,7 @@ const usuarioSchema = new mongoose.Schema({
         required : true,
         trim : true
     },
+    imagen : String,
     token : String,
     expira : Date
 });
