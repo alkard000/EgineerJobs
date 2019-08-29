@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Vacante = mongoose.model('Vacante');
+const multer = require('multer');
+const shortid = require('shortid');
 
 exports.formularioNuevaVacante = (req, res) => {
     res.render('nuevavacante', {
@@ -117,3 +119,66 @@ const verificarAutor = (vacante = {}, usuario = {} ) => {
     }
     return true;
 }
+//Subir archivos PDF
+exports.subirCV = (req, res, next) => {
+    upload(req, res, function(error){
+        if(error) {
+            console.log(error);
+            if(error instanceof multer.MulterError){
+                if(error.code === 'LIMIT_FILE_SIZE') {
+                    req.flash('error', 'El archivo es demasiado grande (MAX. 100 Kb)');
+                } else {
+                    req.flash('error', error.message);
+                }
+            } else {
+                req.flash('error', error.message);
+            }
+            res.redirect('back');
+            return;
+        } else {
+            return next();
+        }
+    });
+}
+//Configuracion de MULTER
+const configuracionMulter = {
+    limits : { fileSize : 1000000 },
+    storage : fileStorage = multer.diskStorage({
+        destination : (req, file, cb) => {
+            cb(null, __dirname+'../../public/uploads/cv');
+        },
+        filename : (req, file, cb) => {
+            const extension = file.mimetype.split('/')[1];
+            cb(null, `${shortid.generate()}.${extension}`);
+        }
+    }),
+    fileFilter(req, file, cb)  {
+        if(file.mimetype === 'application/pdf') {
+            //CB como true(ACEPTADA) o false(DENEGADA)
+            cb(null, true);
+        } else {
+            cb(new Error('Formato no Valido'), false);
+        }
+    }
+}
+const upload = multer(configuracionMulter).single('CV');
+//CONTACTAR------>>Almacenar candidatos en base de datos
+exports.contactar = async (req, res, next ) => {
+    const vacante = await Vacante.findOne( { url : req.params.url } );
+    //NO existe la vacante
+    if(!vacante) return next();
+
+    //TODO bien
+    const nuevoCandidato = {
+        nombre : req.body.nombre,
+        email : req.body.email,
+        cv : req.file.filename
+    }
+    //Almacenar VACANTE
+    vacante.candidatos.push(nuevoCandidato);
+    await vacante.save();
+    //Mensaje FLASH y REDIRECCION
+    req.flash('correcto', 'Se envio tu Curriculum');
+    res.redirect('/');
+}
+
