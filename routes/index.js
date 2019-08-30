@@ -5,9 +5,7 @@ const vacantesController = require('../controllers/vacantesController');
 const usuariosController = require('../controllers/usuariosController');
 const authController = require('../controllers/authController');
 
-
-
-
+//--------RUTAS---------//
 module.exports = () => {
 
     router.get('/', 
@@ -60,6 +58,14 @@ module.exports = () => {
     );
     router.post('/iniciar-sesion', 
         authController.autenticarUsuario
+    );
+
+    //Recuperacion de Contraseñas
+    router.get('/restablecer', 
+        authController.formRestablecerPassword,
+    );
+    router.post('/restablecer', 
+        authController.enviarToken
     );
     
     //Cerrar Sesion en la CUENTA

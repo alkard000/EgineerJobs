@@ -1,6 +1,9 @@
 const passport = require('passport');
 const mongoose = require('mongoose');
 const Vacante = mongoose.model('Vacante');
+const Usuarios = mongoose.model('Usuarios');
+const crypto = require('crypto');
+const enviarEmail = require('../handlers/email');
 
 exports.autenticarUsuario = passport.authenticate('local', {
     successRedirect : '/administracion',
@@ -32,4 +35,38 @@ exports.cerrarSesion = (req, res) => {
     req.logout();
     req.flash('correcto', 'Cerraste tu Sesion');
     return res.redirect('/iniciar-sesion');
+}
+//Formulario para RESETEAR password
+exports.formRestablecerPassword = (req, res) => {
+    res.render('restablecer', {
+        nombrePagina : 'Restablece tu Password',
+        tagline : 'Si ya tienes una cuenta en EngineerJobs, pero olvidaste tu password, RECUPERALA'
+    })
+}
+//Enviar el TOKEN
+exports.enviarToken = async (req, res) => {
+    const usuario = await Usuarios.findOne( { email : req.body.email } );
+    //USUARIO no Existe
+    if(!usuario) { 
+        req.flash('error', 'No existe esa cuenta');
+        return res.redirect('/iniciar-sesion');
+    }
+    //USUARIO existe
+    usuario.token = crypto.randomBytes(20).toString('hex');
+    usuario.expira = Date.now() + 3600000;
+    //GUardar el USUARIO
+    await usuario.save();
+    const resetURL = `http://${req.headers.host}/re;stablecer/${usuario.token}`;
+
+    console.log(resetURL);
+
+    await enviarEmail.enviar({
+        usuario,
+        subject : 'Password Reset',
+        resetURL,
+        archivo : 'reset'
+    });
+
+    req.flash('correcto', 'Revisa tu Email para la indicaciones');
+    res.redirect('/iniciar-sesion');
 }
