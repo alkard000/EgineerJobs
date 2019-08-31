@@ -13,8 +13,13 @@ let transport = nodemailer.createTransport({
 })
 //Usar TEMPLATE HB
 transport.use('compile', hbs({
-    viewEgine : 'handlebars',
-    viewPath : __dirname+'/../views/partials/emails',
+    viewEngine: {
+        extName: '.handlebars',
+        partialsDir:  __dirname+'/../views/emails',
+        layoutsDir:  __dirname+'/../views/emails',
+        defaultLayout: 'reset.handlebars',
+      },
+    viewPath : __dirname+'/../views/emails',
     extName : '.handlebars'
 }));
 exports.enviar = async (opciones) => {

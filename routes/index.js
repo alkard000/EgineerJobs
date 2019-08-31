@@ -67,6 +67,9 @@ module.exports = () => {
     router.post('/restablecer', 
         authController.enviarToken
     );
+    router.get('/restablecer/:token', 
+        authController.restablecerPassword);
+    router.post('/restablecer/:token', authController.guardarPassword)
     
     //Cerrar Sesion en la CUENTA
     router.get('/cerrar-sesion', 

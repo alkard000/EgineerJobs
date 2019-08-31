@@ -10,7 +10,6 @@ exports.mostarTrabajos = async (req, res, next) => {
         tagline : 'Un sitio donde puedes encontrar y publicar trabajos para Ingenieros',
         barra : true,
         boton : true,
-        imagen : req.user.imagen,
         vacantes
     })
 }

@@ -56,9 +56,9 @@ exports.enviarToken = async (req, res) => {
     usuario.expira = Date.now() + 3600000;
     //GUardar el USUARIO
     await usuario.save();
-    const resetURL = `http://${req.headers.host}/re;stablecer/${usuario.token}`;
+    const resetURL = `http://${req.headers.host}/restablecer/${usuario.token}`;
 
-    console.log(resetURL);
+    //console.log(resetURL);
 
     await enviarEmail.enviar({
         usuario,
@@ -69,4 +69,45 @@ exports.enviarToken = async (req, res) => {
 
     req.flash('correcto', 'Revisa tu Email para la indicaciones');
     res.redirect('/iniciar-sesion');
+}
+//Validar si el TOKEN EXISTE
+exports.restablecerPassword = async (req, res) => {
+    const usuario = await Usuarios.findOne({
+        token : req.params.token,
+        expira : {
+            $gt : Date.now()
+        }
+    });
+    if(!usuario) {
+        req.flash('error', 'El formulario ya no es valido');
+        return res.redirect('/restablecer');
+    }
+    //MOSTRAR FORMULARIO
+    res.render('nuevopassword', {
+        nombrePagina : 'Restablecer Password'
+    })
+}
+//Almacena el nuevo password en la BD
+exports.guardarPassword = async (req, res) => {
+    const usuario = await Usuarios.findOne({
+        token : req.params.token,
+        expira : {
+            $gt : Date.now()
+        }
+    });
+    //No esite USUARIO o TOKEN
+    if(!usuario) {
+        req.flash('error', 'El formulario ya no es valido');
+        return res.redirect('/restablecer');
+    }
+    //Asignar PW en BD y limpiar
+    usuario.password = req.body.password;
+    usuario.token = undefined;
+    usuario.expira = undefined;
+    //Agregar y eliminar el nuevo objeto
+    await usuario.save();
+    //REDIRIGIR
+    req.flash('correcto', 'Password modificado Correctamente');
+    res.redirect('/iniciar-sesion');
+
 }
