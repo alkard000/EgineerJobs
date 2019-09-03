@@ -10,6 +10,8 @@ module.exports = () => {
 
     router.get('/', 
         homeController.mostarTrabajos);
+    router.get('/lista-vacantes/:page', 
+        vacantesController.paginarVacantes);
 
     //Crear VACANTES
     router.get('/vacantes/nueva', 
@@ -69,7 +71,8 @@ module.exports = () => {
     );
     router.get('/restablecer/:token', 
         authController.restablecerPassword);
-    router.post('/restablecer/:token', authController.guardarPassword)
+    router.post('/restablecer/:token', 
+        authController.guardarPassword)
     
     //Cerrar Sesion en la CUENTA
     router.get('/cerrar-sesion', 

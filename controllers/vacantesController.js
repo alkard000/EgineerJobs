@@ -37,6 +37,30 @@ exports.mostrarVacante = async (req, res, next) => {
         barra : true
     })
 }
+//Paginar vacantes
+exports.paginarVacantes =  (req, res, next) => {
+    let pageCount = 5;
+    let page = req.params.page || 1;
+    Vacante
+      .find({}) // finding all documents
+      .skip((pageCount * page) - pageCount) // in the first page the value of the skip is 0
+      .limit(pageCount) // output just 9 items
+      .exec((err, vacante) => {
+        Vacante.count((err, count) => { // count to calculate the number of pages
+          if (err) return next(err);
+          res.render('paginacion', {
+            vacante,
+            barra : true,
+            pagination: {
+                page : req.params.page || 1,
+                pageCount : Math.ceil(count / pageCount)
+            }
+          })
+        })
+      })
+    
+
+}
 //Formulario de la edicion de una Vacante
 exports.formEditarVacante = async (req, res, next) => {
     const vacante = await Vacante.findOne({url : req.params.url});

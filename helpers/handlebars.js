@@ -1,3 +1,8 @@
+var Handlebars = require('handlebars');
+var paginate = require('handlebars-paginate');
+
+Handlebars.registerHelper('paginate', paginate);
+
 module.exports = {
     seleccionarSkills : (seleccionadas = [], opciones) => {
         const skills = ['AutoCAD', 'Vulcan', 'Datamine', 'MatLab', 
@@ -23,7 +28,7 @@ module.exports = {
     },//-------->Funcion que marca el contrato inicial como default
     mostrarAlertas : (errores = {}, alertas) => {
         const categoria = Object.keys(errores);
-        console.log(categoria);
+        //console.log(categoria);
 
         let html = '';
         if(categoria.length){

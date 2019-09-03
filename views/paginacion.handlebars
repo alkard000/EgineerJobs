@@ -1,0 +1,58 @@
+<main class="lista-vacantes">
+    <h2>Lista de Vacantes</h2>
+
+    {{#if vacante.length}}
+        {{#each vacante}}
+            <div class="vacante">
+                <div class="caja">
+                    <h3>{{empresa}}</h3>
+                    <p class="puesto">{{titulo}}</p>
+                </div>
+                <div class="caja">
+                    <p class="etiqueta">Ubicación</p>
+                    <p class="nombre">{{ubicacion}}</p>
+                </div>
+                <div class="caja">
+                    <div class="etiqueta">Contrato</div>
+                    <div class="nombre contrato">{{contrato}}</div>
+                </div>
+                <div class="caja centrar-vertical">
+                    <a href="/vacantes/{{url}}" class="btn btn-verde">Mas Info</a>
+                </div>
+            </div><!--.VACANTES-->
+        {{/each}}
+        <div class="row">
+            <nav class="mx-auto">
+                <ul class="pagination">
+                    {{#paginate pagination type="first"}}
+                        <li {{#if disabled}}class="page-item disabled"{{/if}}>
+                            <a class="page-link" href="/lista-vacantes/{{n}}">First</a>
+                        </li>
+                    {{/paginate}}
+                    {{#paginate pagination type="previous"}}
+                        <li {{#if disabled}}class="page-item disabled"{{/if}}>
+                            <a class="page-link" href="/lista-vacantes/{{n}}">Prev</a>
+                        </li>
+                    {{/paginate}}
+                    {{#paginate pagination type="middle" limit="7"}}
+                        <li {{#if active}}class="page-item active"{{/if}}>
+                            <a class="page-link" href="/lista-vacantes/{{n}}">{{n}}</a>
+                        </li>
+                    {{/paginate}}
+                    {{#paginate pagination type="next"}}
+                        <li {{#if disabled}}class="page-item disabled"{{/if}}>
+                            <a class="page-link" href="/lista-vacantes/{{n}}">Next</a>
+                        </li>
+                    {{/paginate}}
+                    {{#paginate pagination type="last"}}
+                        <li {{#if disabled}}class="page-item disabled"{{/if}}>
+                            <a class="page-link" href="/lista-vacantes/{{n}}">Last</a>
+                        </li>
+                    {{/paginate}}
+                </ul>
+            </nav>
+        </div>
+    {{else}}
+        <p>No hay Vacantes</p>
+    {{/if}}
+</main>
