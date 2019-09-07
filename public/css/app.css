@@ -7,8 +7,9 @@ html {
 }
 body {
     background-color: #100E17;
-    font-family: 'Rubik', sans-serif;
+    font-family: 'PT Sans', sans-serif;
     font-size: 1.6rem;
+    position: relative;
 }
 p {
     font-size: 1.6rem;
@@ -520,4 +521,43 @@ p.candidatos {
 .enviar-datos p {
     color: white;
     font-size: 1.8rem;
+}
+.row {
+    margin-top: 30px!important;
+}
+.page-item.active .page-link {
+    background-color: #00C897!important;
+    border-color: #00C897!important;
+}
+.page-link {
+    color: rgb(255, 255, 255)!important;
+    background-color: black;
+    border-color: #00C897!important;
+    transition: all .5s ease;
+}
+.page-item.disabled .page-link{
+    background-color: rgb(90, 90, 90)!important;
+    border-color: #00C897!important;
+    color : #00C897!important;
+}
+.page-link:hover {
+    z-index: 2;
+    text-decoration: none;
+    background-color: #00C897!important;
+    color: #dee2e6;
+}
+.page-link i {
+    padding: 0 5px 0 5px;
+}
+.navbar-nav {
+    font-size: 20px;
+}
+.nav-item {
+    margin: 0 5px 0 5px;
+}
+.dropdown-menu { 
+    border-radius: 5px;
+}
+.dropdown-menu {
+    font-size: 15px;
 }

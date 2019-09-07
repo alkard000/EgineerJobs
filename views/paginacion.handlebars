@@ -26,12 +26,12 @@
                 <ul class="pagination">
                     {{#paginate pagination type="first"}}
                         <li {{#if disabled}}class="page-item disabled"{{/if}}>
-                            <a class="page-link" href="/lista-vacantes/{{n}}">First</a>
+                            <a class="page-link" href="/lista-vacantes/{{n}}"><i class="fas fa-fast-backward"></i></a>
                         </li>
                     {{/paginate}}
                     {{#paginate pagination type="previous"}}
                         <li {{#if disabled}}class="page-item disabled"{{/if}}>
-                            <a class="page-link" href="/lista-vacantes/{{n}}">Prev</a>
+                            <a class="page-link" href="/lista-vacantes/{{n}}"><i class="fas fa-step-backward"></i></a>
                         </li>
                     {{/paginate}}
                     {{#paginate pagination type="middle" limit="7"}}
@@ -41,12 +41,12 @@
                     {{/paginate}}
                     {{#paginate pagination type="next"}}
                         <li {{#if disabled}}class="page-item disabled"{{/if}}>
-                            <a class="page-link" href="/lista-vacantes/{{n}}">Next</a>
+                            <a class="page-link" href="/lista-vacantes/{{n}}"></a><i class="fas fa-step-forward"></i></a>
                         </li>
                     {{/paginate}}
                     {{#paginate pagination type="last"}}
                         <li {{#if disabled}}class="page-item disabled"{{/if}}>
-                            <a class="page-link" href="/lista-vacantes/{{n}}">Last</a>
+                            <a class="page-link" href="/lista-vacantes/{{n}}">Last<i class="fas fa-fast-forward"></i></a>
                         </li>
                     {{/paginate}}
                 </ul>
